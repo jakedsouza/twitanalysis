@@ -46,7 +46,7 @@ public class TwitterSentimentAnalysisServlet extends HttpServlet {
 		    for (String line; (line = br.readLine()) != null ;)
 		        text.append( line );
 		    }catch(IOException e){
-		    	
+
 		    }
 		    String string = text.toString();
 		    String[] row = string.split(",;");
@@ -64,20 +64,21 @@ public class TwitterSentimentAnalysisServlet extends HttpServlet {
 
 		String location = req.getParameter("location");
 		String query = req.getParameter("query");
-		
+		System.out.println("Location :  " + location + "query " + query) ;
 		URL googleUrl = null;
+		URI uri2;
 		try {
 			// = new URI(str)
 //			URI uri = new URI(
 //					"http://maps.googleapis.com/maps/api/geocode/json?address="
 //							+ location + "&sensor=false");
-			URI uri2 = new URI("http", null, "maps.googleapis.com", 80, "/maps/api/geocode/json", "address="+location+"&sensor=false", null);
+			uri2 = new URI("http", null, "maps.googleapis.com", 80, "/maps/api/geocode/json", "address="+location+"&sensor=false", null);
 			googleUrl = uri2.normalize().toURL();
 		} catch (URISyntaxException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
+		System.out.println("uri " + googleUrl);
 		JSONObject googleResult;
 		JSONObject twitResult = null;
 		List<TwitResultModel> twits = null ;
@@ -172,9 +173,9 @@ public class TwitterSentimentAnalysisServlet extends HttpServlet {
 			Gson gson = new Gson();
 			TwitResultModel model = gson.fromJson(results.getJSONObject(i)
 					.toString(), TwitResultModel.class);
-			// getting sentiment too 
+			// getting sentiment too
 			model.setSentimentScore(calculateSentimentScore(model.getText()));
-			
+
 			resultList.add(model);
 		}
 		return resultList;
